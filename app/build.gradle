@@ -1,0 +1,74 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.2"
+
+        defaultConfig.with {
+            applicationId = "cn.easyar.samples.helloarvideo"
+            minSdkVersion.apiLevel  =15
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+        }
+        sourceSets {
+//            main {
+//                manifest.srcFile 'AndroidManifest.xml'
+//                java.srcDirs = ['src']
+//                resources.srcDirs = ['src']
+//                aidl.srcDirs = ['src']
+//                renderscript.srcDirs = ['src']
+//                res.srcDirs = ['res']
+//                assets.srcDirs = ['assets']
+//                jniLibs.srcDirs = ['libs']
+//            }
+        }
+    }
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles.add(file("proguard-rules.pro"))
+        }
+    }
+    android.ndk {
+        moduleName = "HelloARVideoNative"
+//        cppFlags.add("-I${file("../../../package/include")}".toString())
+//        cppFlags.add("-I${file("../src/main/jni/easyar")}".toString())
+        cppFlags.add("-I${file("src/main/jni/include")}".toString())
+        cppFlags.add("-DANDROID")
+        cppFlags.add("-fexceptions")
+        cppFlags.add("-frtti")
+        stl = "gnustl_static"
+        ldLibs.add("log")
+        ldLibs.add("GLESv2")
+    }
+
+    android.productFlavors {
+        create("arm") {
+            ndk.with {
+                abiFilters.add("armeabi-v7a")
+            }
+        }
+    }
+
+    android.sources {
+        main {
+            jni {
+                dependencies {
+//           /Users/lipengjun/Desktop/work/AR/EasyARSDKSamples/Android/HelloARVideoNative/app/src/main/libs/armeabi-v7a
+                    library file("src/main/libs/armeabi-v7a/libEasyAR.so") abi "armeabi-v7a"
+//                    library file("../../../package/Android/libs/armeabi-v7a/libEasyAR.so") abi "armeabi-v7a"
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+//        compile fileTree(include: ['*.jar'], dir:'libs')//记得添加依赖，一般默认的都会自动生成
+    compile fileTree(include: ['*.jar'], dir: 'src/main/libs')
+//    compile fileTree(include: ['*.jar'], dir: '../../../package/Android/libs')
+    compile 'com.android.support:appcompat-v7:20.0.0'
+    //    compile 'com.android.support:appcompat-v7:25.1.1'
+}
