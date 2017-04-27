@@ -11,6 +11,7 @@ model {
             targetSdkVersion.apiLevel = 22
             versionCode = 1
             versionName = "1.0"
+            multiDexEnabled = true
         }
     }
     android.buildTypes {
@@ -57,9 +58,10 @@ dependencies {
     //        compile fileTree(include: ['*.jar'], dir:'libs')//记得添加依赖，一般默认的都会自动生成
     //    compile fileTree(include: ['*.jar'], dir: 'src/main/libs')
     //    compile fileTree(include: ['*.jar'], dir: '../../../package/Android/libs')
-    compile 'com.android.support:appcompat-v7:20.0.0'
+    compile 'com.android.support:appcompat-v7:23.1.0'
     //    compile 'com.android.support:appcompat-v7:25.1.1'
     compile project(':EasyArLibrary')
-    compile 'com.android.support:recyclerview-v7:25.1.1'
-    compile 'com.android.support:cardview-v7:25.1.1'
+    compile project(':PhotoGallery')
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
 }

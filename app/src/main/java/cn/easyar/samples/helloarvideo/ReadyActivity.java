@@ -1,5 +1,6 @@
 package cn.easyar.samples.helloarvideo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import cn.easyar.adapter.ReadyRecyclerAdapter;
+import cn.easyar.photogallery.photo.widget.PickConfig;
 
 
 /**
@@ -57,7 +59,9 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
     int id = v.getId();
         switch (id){
             case R.id.button_add:
-
+                new  PickConfig.Builder(ReadyActivity.this)
+                        .actionBarcolor(Color.parseColor("#E91E63"))
+                        .statusBarcolor(Color.parseColor("#D81B60")).pickMode(PickConfig.MODE_MULTIP_PICK).build();
                 break;
             case R.id.button_start:
 
