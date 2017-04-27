@@ -7,8 +7,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.ArrayList;
 
 import cn.easyar.adapter.ReadyRecyclerAdapter;
 import cn.easyar.photogallery.photo.widget.PickConfig;
@@ -36,8 +39,6 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        readyRecyclerAdapter = new ReadyRecyclerAdapter(this);
-        recyclerView.setAdapter(readyRecyclerAdapter);
         //设置Item增加、移除动画
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -64,7 +65,9 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
             case R.id.button_add:
                 new  PickConfig.Builder(ReadyActivity.this)
                         .actionBarcolor(Color.parseColor("#E91E63"))
-                        .statusBarcolor(Color.parseColor("#D81B60")).pickMode(PickConfig.MODE_MULTIP_PICK).build();
+                        .statusBarcolor(Color.parseColor("#D81B60"))
+                        .maxPickSize(9)
+                        .pickMode(PickConfig.MODE_MULTIP_PICK).build();
                 break;
             case R.id.button_start:
                 Intent intent = new Intent();
@@ -74,6 +77,19 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                 startActivity(intent);
                 break;
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK && requestCode == PickConfig.PICK_REQUEST_CODE){
+            //在data中返回 选择的图片列表
+            ArrayList<String> paths=data.getStringArrayListExtra("data");
+            //TODO recyclerview 设置adapter
+            readyRecyclerAdapter = new ReadyRecyclerAdapter(this,paths);
+            recyclerView.setAdapter(readyRecyclerAdapter);
+            Log.e("lists", "onActivityResult: "+paths.toString());
         }
     }
 

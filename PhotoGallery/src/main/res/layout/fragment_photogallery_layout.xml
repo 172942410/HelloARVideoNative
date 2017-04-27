@@ -22,13 +22,14 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_height="48dp">
+        android:layout_height="60dp">
         <TextView
             android:id="@+id/open_gallery"
             android:clickable="true"
             android:text="最近"
             android:paddingLeft="22dp"
             android:minWidth="120dp"
+            android:textSize="16sp"
             android:focusable="true"
             android:textColor="#ffffff"
             android:gravity="center_vertical"
