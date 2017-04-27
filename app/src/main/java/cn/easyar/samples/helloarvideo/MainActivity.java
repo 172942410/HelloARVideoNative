@@ -6,11 +6,13 @@
 
 package cn.easyar.samples.helloarvideo;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
@@ -41,15 +43,23 @@ public class MainActivity extends ActionBarActivity{
     private native boolean nativeInit();
     private native void nativeDestory();
     private native void nativeRotationChange(boolean portrait);
+    private native boolean nativeInitJson(String jsonStr);//为了替代无参数的此方法存在；可以从java层传递数据参数到C++里面执行；
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent =  getIntent();
+        String jsonStr = intent.getStringExtra("data");//targets.json;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);//隐藏状态栏
         EasyAR.initialize(this, key);
-        nativeInit();
+        if (jsonStr != null && jsonStr.length() > 0) {
+            //初始化AR的 target s 信息
+            nativeInitJson(jsonStr);
+        } else {
+            nativeInit();
+        }
 
         GLView glView = new GLView(this);
         glView.setRenderer(new Renderer());
