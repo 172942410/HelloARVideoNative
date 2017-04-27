@@ -23,6 +23,8 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait"
             ></activity>
+        <activity android:name=".photo.VideoChoseActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
     </application>
 

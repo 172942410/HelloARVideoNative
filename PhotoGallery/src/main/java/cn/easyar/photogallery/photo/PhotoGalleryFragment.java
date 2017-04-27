@@ -34,6 +34,7 @@ import cn.easyar.photogallery.R;
 import cn.easyar.photogallery.photo.adapter.FloderAdapter;
 import cn.easyar.photogallery.photo.adapter.PhotoAdapter;
 import cn.easyar.photogallery.photo.mode.ImageFloder;
+import cn.easyar.photogallery.photo.widget.ECProgressDialog;
 import cn.easyar.photogallery.photo.widget.PickConfig;
 
 /**
@@ -65,6 +66,8 @@ public class PhotoGalleryFragment extends Fragment implements android.os.Handler
      */
     private List<ImageFloder> mImageFloders = new ArrayList<ImageFloder>();
 
+    private ECProgressDialog mPostingdialog;
+
     @Override
     public boolean handleMessage(Message msg) {
         if (msg.what == 1) {
@@ -95,6 +98,7 @@ public class PhotoGalleryFragment extends Fragment implements android.os.Handler
         popupWindow.setContentWidth(sWidthPix);
         popupWindow.setHeight(sWidthPix + 100);
         popupWindow.setAnchorView(open_gallery);
+        dismissPostingDialog();
         open_gallery.setEnabled(true);
 
         popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,6 +115,8 @@ public class PhotoGalleryFragment extends Fragment implements android.os.Handler
                     adapter.setNeedCamera(isNeedfcamera);
                     my_recycler_view.setAdapter(adapter);
                     popupWindow.dismiss();
+                    open_gallery.setEnabled(true);
+                    isshowiing = false;
                     open_gallery.setText("所有图片");
                 } else {
                     File mImgDir = new File(floder.getDir());
@@ -137,6 +143,9 @@ public class PhotoGalleryFragment extends Fragment implements android.os.Handler
                     my_recycler_view.setAdapter(adapter);
                     open_gallery.setText(floder.getName());
                     popupWindow.dismiss();
+                    isshowiing = false;
+                    open_gallery.setEnabled(true);
+
                 }
             }
         });
@@ -189,6 +198,7 @@ public class PhotoGalleryFragment extends Fragment implements android.os.Handler
             open_gallery = (TextView) rootview.findViewById(R.id.open_gallery);
             clear = (ImageView) rootview.findViewById(R.id.clear);
             open_gallery.setEnabled(false);
+            showCustomProcessDialog();
         }
         if (adapter == null) {
             adapter = new PhotoAdapter(getActivity(), currentimageses, spancount,chose_mode);
@@ -360,6 +370,29 @@ public class PhotoGalleryFragment extends Fragment implements android.os.Handler
         max_chose_count = bundle.getInt(PickConfig.EXTRA_MAX_SIZE);
         spancount =bundle.getInt(PickConfig.EXTRA_SPAN_COUNT);
         isNeedfcamera= bundle.getBoolean(PickConfig.EXTRA_IS_NEED_CAMERA);
+    }
+
+    /**
+     * 创建对话框
+     */
+    protected void showCustomProcessDialog() {
+
+        if (mPostingdialog != null && mPostingdialog.isShowing()) {
+            return;
+        }
+        mPostingdialog = new ECProgressDialog(getActivity());
+        mPostingdialog.show();
+    }
+
+    /**
+     * 关闭对话框
+     */
+    protected void dismissPostingDialog() {
+        if (mPostingdialog == null || !mPostingdialog.isShowing()) {
+            return;
+        }
+        mPostingdialog.dismiss();
+        mPostingdialog = null;
     }
 
 
