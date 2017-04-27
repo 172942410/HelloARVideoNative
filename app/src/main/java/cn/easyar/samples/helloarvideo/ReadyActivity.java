@@ -1,7 +1,9 @@
 package cn.easyar.samples.helloarvideo;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -90,6 +92,25 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
             readyRecyclerAdapter = new ReadyRecyclerAdapter(this,paths);
             recyclerView.setAdapter(readyRecyclerAdapter);
             Log.e("lists", "onActivityResult: "+paths.toString());
+        }
+
+        // 选取图片的返回值
+        if (requestCode == 110) {
+            //
+            if (resultCode == RESULT_OK) {
+                Uri uri = data.getData();
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                cursor.moveToFirst();
+                 String imgNo = cursor.getString(0); // 路径
+//                String v_path = cursor.getString(1);
+//                String v_size = cursor.getString(2);
+//                String v_name = cursor.getString(3);
+                Log.e("lujing", "onActivityResult: "+imgNo);
+//                Log.e("lujing", "onActivityResult: "+v_path);
+//                Log.e("lujing", "onActivityResult: "+v_size);
+//                Log.e("lujing", "onActivityResult: "+v_name);
+                readyRecyclerAdapter.setVideoUrl(imgNo);
+            }
         }
     }
 

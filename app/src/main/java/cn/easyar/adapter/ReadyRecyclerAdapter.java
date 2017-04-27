@@ -1,6 +1,7 @@
 package cn.easyar.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import cn.easyar.samples.helloarvideo.R;
 public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdapter.ItemHolder> {
     Activity activity;
     private ArrayList<String> photoList;
+    private ItemHolder itemHolder;
 
     public ReadyRecyclerAdapter(Activity activity, ArrayList<String> photoList){
         this.activity = activity;
@@ -36,12 +38,17 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder holder, int position) {
-        ItemHolder itemHolder = holder;
+    public void onBindViewHolder(ItemHolder holder, final int position) {
+        itemHolder = holder;
         // 显示缩略图
-        displayImage(photoList.get(position),itemHolder.imageView);
+        displayImage(photoList.get(position), itemHolder.imageView);
         itemHolder.addBtn.setText(photoList.get(position));
-
+        itemHolder.videoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectVideo(v,position);
+            }
+        });
     }
 
     @Override
@@ -50,6 +57,18 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
             return 0;
         }
         return photoList.size();
+    }
+
+    private void selectVideo(View view, int postion){
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        activity.startActivityForResult(intent,110);
+    }
+
+    public void setVideoUrl(String url){
+        itemHolder.videoBtn.setText(url);
+        notifyDataSetChanged();
     }
 
     public void displayImage(String url, ImageView view) {
@@ -64,6 +83,7 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
 
     public class ItemHolder extends RecyclerView.ViewHolder{
 
+        public Button videoBtn;
         public ImageView imageView;
         public Button addBtn;
 
@@ -71,6 +91,7 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.photo);
             addBtn = (Button) itemView.findViewById(R.id.button_add);
+            videoBtn = (Button) itemView.findViewById(R.id.button_start);
         }
 
     }
