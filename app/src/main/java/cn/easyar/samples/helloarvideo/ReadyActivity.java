@@ -1,8 +1,10 @@
 package cn.easyar.samples.helloarvideo;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -34,9 +36,10 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        readyRecyclerAdapter = new ReadyRecyclerAdapter();
+        readyRecyclerAdapter = new ReadyRecyclerAdapter(this);
         recyclerView.setAdapter(readyRecyclerAdapter);
-
+        //设置Item增加、移除动画
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
 
@@ -64,7 +67,11 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                         .statusBarcolor(Color.parseColor("#D81B60")).pickMode(PickConfig.MODE_MULTIP_PICK).build();
                 break;
             case R.id.button_start:
+                Intent intent = new Intent();
+                intent.setClass(this,MainActivity.class);
+                //TODO 传递参数 需要加载的 JSON 数据
 
+                startActivity(intent);
                 break;
 
         }
