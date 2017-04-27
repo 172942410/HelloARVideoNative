@@ -8,7 +8,7 @@
 #define __EASYAR_SAMPLE_UTILITY_SIMPLERENDERER_H__
 
 #include "easyar/matrix.hpp"
-//#include "include/easyar/matrix.hpp"
+#include "include/easyar/matrix.hpp"
 
 namespace EasyAR{
 namespace samples{

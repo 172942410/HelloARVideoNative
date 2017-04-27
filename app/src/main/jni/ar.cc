@@ -4,13 +4,19 @@
 * and other countries for the augmented reality technology developed by VisionStar Information Technology (Shanghai) Co., Ltd.
 */
 
+#include <stdint.h>
 #include "ar.hpp"
-#include <algorithm>
+#include "include/easyar/target.hpp"
+#include "include/easyar/imagetarget.hpp"
+//#include <algorithm>
 #ifdef ANDROID
 #include <android/log.h>
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "EasyAR", __VA_ARGS__)
 #else
 #define LOGI(...) printf(__VA_ARGS__)
+
+class string;
+
 #endif
 
 namespace EasyAR{
@@ -46,7 +52,13 @@ bool AR::initCamera()
     status &= augmenter_.attachCamera(camera_);
     return status;
 }
-
+void AR::loadJavaJson(const std::string& path)
+{
+    TargetList targets = ImageTarget::loadAll(path.c_str(), EasyAR::kStorageAbsolute| EasyAR::kStorageJson);
+    for (int i = 0; i < targets.size(); ++i) {
+        tracker_.loadTarget(targets[i], new HelloCallBack());
+    }
+}
 void AR::loadFromImage(const std::string& path)
 {
     ImageTarget target;
@@ -59,7 +71,8 @@ void AR::loadFromImage(const std::string& path)
                        "    }\n"
                        "  ]\n"
                        "}";
-    target.load(jstr.c_str(), EasyAR::kStorageAssets | EasyAR::kStorageJson);
+//    target.load(jstr.c_str(), EasyAR::kStorageAssets | EasyAR::kStorageJson);
+    target.load(jstr.c_str(), EasyAR::kStorageAbsolute | EasyAR::kStorageJson);
     tracker_.loadTarget(target, new HelloCallBack());
 }
 
@@ -72,7 +85,8 @@ void AR::loadFromJsonFile(const std::string& path, const std::string& targetname
 
 void AR::loadAllFromJsonFile(const std::string& path)
 {
-    TargetList targets = ImageTarget::loadAll(path.c_str(), EasyAR::kStorageAssets);
+//    TargetList targets = ImageTarget::loadAll(path.c_str(), EasyAR::kStorageAssets);
+    TargetList targets = ImageTarget::loadAll(path.c_str(), EasyAR::kStorageAbsolute| EasyAR::kStorageJson);
     for (int i = 0; i < targets.size(); ++i) {
         tracker_.loadTarget(targets[i], new HelloCallBack());
     }

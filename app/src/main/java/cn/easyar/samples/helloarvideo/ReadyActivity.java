@@ -179,6 +179,7 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                     Log.e("lujing", "v_5 onActivityResult: " + v_5);
 //                Log.e("lujing", "v_6 onActivityResult: "+v_6);
 //                Log.e("lujing", "v_7 onActivityResult: "+v_7);
+                    jsonDataBean.images.get(0).uid = pathStr;//TODO 先默认只是第一个；之后要对应住每一个item
                 }
                 readyRecyclerAdapter.setData(jsonDataBean.images);
 //                readyRecyclerAdapter.setVideoUrl(pathStr);

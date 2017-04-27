@@ -7,13 +7,18 @@
 #ifndef __EASYAR_SAMPLE_UTILITY_AR_H__
 #define __EASYAR_SAMPLE_UTILITY_AR_H__
 
-#include "easyar/camera.hpp"
-#include "easyar/imagetracker.hpp"
-#include "easyar/augmenter.hpp"
-#include "easyar/imagetarget.hpp"
-#include "easyar/frame.hpp"
-#include "easyar/player.hpp"
-#include "easyar/utility.hpp"
+//#include "easyar/camera.hpp"
+//#include "easyar/imagetracker.hpp"
+//#include "easyar/augmenter.hpp"
+//#include "easyar/imagetarget.hpp"
+//#include "easyar/frame.hpp"
+//#include "easyar/player.hpp"
+//#include "easyar/utility.hpp"
+
+#include "include/easyar/player.hpp"
+#include "include/easyar/camera.hpp"
+#include "include/easyar/imagetracker.hpp"
+#include "include/easyar/augmenter.hpp"
 #include <string>
 
 namespace EasyAR{
@@ -25,6 +30,7 @@ public:
     AR();
     virtual ~AR();
     virtual bool initCamera();
+    virtual void loadJavaJson(const std::string& path);//自己写的
     virtual void loadFromImage(const std::string& path);
     virtual void loadFromJsonFile(const std::string& path, const std::string& targetname);
     virtual void loadAllFromJsonFile(const std::string& path);

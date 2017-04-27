@@ -6,6 +6,10 @@
 
 #include "ar.hpp"
 #include "renderer.hpp"
+#include "include/easyar/target.hpp"
+#include "include/easyar/imagetarget.hpp"
+#include "include/easyar/utility.hpp"
+#include "include/easyar/frame.hpp"
 #include <jni.h>
 #include <GLES2/gl2.h>
 
@@ -18,6 +22,9 @@ extern "C" {
     JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeResizeGL(JNIEnv* env, jobject object, jint w, jint h));
     JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRender(JNIEnv* env, jobject obj));
     JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv* env, jobject obj, jboolean portrait));
+    JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeInputTarger(JNIEnv* env, jobject obj, jobjectArray paths));
+    JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeInputMarker(JNIEnv* env, jobject obj, jobjectArray paths));
+    JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitJson(JNIEnv* env, jobject object,jstring jsonStr));
 };
 
 namespace EasyAR {
@@ -40,6 +47,7 @@ private:
     int texid[3];
     ARVideo* video;
     VideoRenderer* video_renderer;
+    std::string data[3];
 };
 
 HelloARVideo::HelloARVideo()
@@ -53,6 +61,10 @@ HelloARVideo::HelloARVideo()
     }
     video = NULL;
     video_renderer = NULL;
+    data[0]="video.mp4";
+    data[1] = "transparentvideo.mp4";
+    data[2]="http://7xl1ve.com5.z0.glb.clouddn.com/sdkvideo/EasyARSDKShow201520.mp4";
+//    data[3] = {"video.mp4","transparentvideo.mp4","http://7xl1ve.com5.z0.glb.clouddn.com/sdkvideo/EasyARSDKShow201520.mp4"};
 }
 
 HelloARVideo::~HelloARVideo()
@@ -106,17 +118,28 @@ void HelloARVideo::render()
             if (video == NULL) {
                 if(frame.targets()[0].target().name() == std::string("argame") && texid[0]) {
                     video = new ARVideo;
-                    video->openVideoFile("video.mp4", texid[0]);
+                    video->openVideoFile(frame.targets()[0].target().uid(), texid[0]);
+//                    读取sd卡文件
+//                    video->openStreamingVideo("/storage/emulated/0/tencent/MicroMsg/WeiXin/test.mp4", texid[0]);
                     video_renderer = renderer[0];
                 }
-                else if(frame.targets()[0].target().name() == std::string("namecard") && texid[1]) {
+//                else if(frame.targets()[0].target().name() == std::string("namecard") && texid[1]) {
+                    //sd卡读取路径
+                else if(frame.targets()[0].target().name() == std::string("/storage/emulated/0/sina/weibo/weibo/test") && texid[1]) {
                     video = new ARVideo;
-                    video->openTransparentVideoFile("transparentvideo.mp4", texid[1]);
+                    video->openVideoFile(data[0], texid[1]);
+//                    video->openTransparentVideoFile("transparentvideo.mp4", texid[1]);
                     video_renderer = renderer[1];
                 }
                 else if(frame.targets()[0].target().name() == std::string("idback") && texid[2]) {
                     video = new ARVideo;
-                    video->openStreamingVideo("http://7xl1ve.com5.z0.glb.clouddn.com/sdkvideo/EasyARSDKShow201520.mp4", texid[2]);
+                    video->openStreamingVideo(data[2],texid[2]);
+//                    video->openVideoFile(frame.targets()[0].target().uid(), texid[0]);
+//                    video->openStreamingVideo("http://7xl1ve.com5.z0.glb.clouddn.com/sdkvideo/EasyARSDKShow201520.mp4", texid[2]);
+                    video_renderer = renderer[2];
+                }else{
+                    video = new ARVideo;
+                    video->openStreamingVideo(frame.targets()[0].target().uid(),texid[2]);
                     video_renderer = renderer[2];
                 }
             }
@@ -161,7 +184,18 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv*, jobject))
 {
     bool status = ar.initCamera();
     ar.loadAllFromJsonFile("targets.json");
-    ar.loadFromImage("namecard.jpg");
+//    ar.loadFromImage("namecard.jpg");
+    ar.loadFromImage("/storage/emulated/0/sina/weibo/weibo/test.jpg");
+    status &= ar.start();
+    return status;
+}
+JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitJson(JNIEnv* env, jobject,jstring jsonStr))
+{
+    bool status = ar.initCamera();
+    const char * jsonChar = env->GetStringUTFChars(jsonStr,0);
+//    std::string jstr = jsonChar;
+    ar.loadJavaJson(jsonChar);
+//    ar.loadAllFromJsonFile(jsonChar);
     status &= ar.start();
     return status;
 }
@@ -189,4 +223,10 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRender(JNIEnv*, jobject))
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv*, jobject, jboolean portrait))
 {
     ar.setPortrait(portrait);
+}
+JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeInputTarger(JNIEnv* env, jobject, jobjectArray paths))
+{
+    //通过java传递进来的String数组对象
+    jclass stringArrCls = env->FindClass("[Ljava/lang/String");
+
 }
