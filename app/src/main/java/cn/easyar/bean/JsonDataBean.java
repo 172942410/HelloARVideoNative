@@ -37,11 +37,41 @@ public class JsonDataBean extends BaseBean<JsonDataBean> {
 
     @Override
     public JsonDataBean parseJSON(JSONObject jsonObj) {
-        return null;
+        if(jsonObj == null) {
+            return null;
+        }
+
+        JSONArray jsonArray = jsonObj.optJSONArray("images");
+        if(jsonArray != null && jsonArray.length()>0){
+            images = new ArrayList<>();
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject jsonChildObject = jsonArray.optJSONObject(i);
+                if(jsonChildObject != null) {
+                    Target target = new Target();
+                    target.image = jsonChildObject.optString("image");
+                    target.uid = jsonChildObject.optString("uid");
+                    target.name = jsonChildObject.optString("name");
+//                target.size = jsonChildObject.optJSONArray("size");
+                    JSONArray jsonSizeArray = jsonChildObject.optJSONArray("size");
+                    if(jsonSizeArray != null && jsonSizeArray.length()>0){
+                        target.size = new ArrayList<>();
+                        for(int j =0;j<jsonSizeArray.length();j++){
+                            Double temp = jsonSizeArray.optDouble(j);
+                            target.size.add(temp);
+                        }
+                    }
+                    images.add(target);
+                }
+            }
+        }
+        return this;
     }
 
     @Override
     public JSONObject toJSON() {
+        if(images == null){
+            return null;
+        }
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         try {

@@ -3,6 +3,7 @@ package cn.easyar.db;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 public class SharedPreferencesUtil {
 
@@ -10,6 +11,7 @@ public class SharedPreferencesUtil {
 	 * 文件名
 	 */
 	private static final String sh_data_name = "AR_Perry";
+	private static final String TAG = "SharedPreferencesUtil";
 	private static SharedPreferences saveInfo;
 	private static Editor saveEditor;
 	private volatile static SharedPreferencesUtil uniqueInstance;
@@ -40,6 +42,7 @@ public class SharedPreferencesUtil {
 	 * @return
      */
 	public boolean putLocalData(String dataStr){
+		Log.e(TAG,"putLocalData:"+dataStr);
 		saveEditor.putString(localData,dataStr);
 		return saveEditor.commit();
 	}

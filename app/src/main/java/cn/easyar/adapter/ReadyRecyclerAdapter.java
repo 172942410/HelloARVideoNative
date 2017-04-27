@@ -3,6 +3,7 @@ package cn.easyar.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import cn.easyar.samples.helloarvideo.R;
  */
 
 public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdapter.ItemHolder> {
+    private static final String TAG = "ReadyRecyclerAdapter";
     Activity activity;
 //    private ArrayList<String> photoList;
     private ItemHolder itemHolder;
@@ -36,9 +38,12 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
 //        this.photoList = photoList;
 //    }
     public void setData(ArrayList<JsonDataBean.Target> targetList){
+
         if(targetList == null || targetList.size() == 0){
+            Log.e(TAG,"adapter数据targetList 为空");
             return;
         }
+        Log.e(TAG,"设置adapter数据");
         this.targetList.clear();
         this.targetList.addAll(targetList);
         notifyDataSetChanged();

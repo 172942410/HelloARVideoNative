@@ -54,6 +54,7 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
         recyclerView.setAdapter(readyRecyclerAdapter);
         spUtil = SharedPreferencesUtil.getInstance(this);
         String localData = spUtil.getLocalData();//读取本地数据
+        Log.e(TAG,"localData:"+localData);
         if(localData != null && localData.length()>0) {
             jsonDataBean = JsonDataBean.createObject(localData);
         }
@@ -185,6 +186,8 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
 //                readyRecyclerAdapter.setVideoUrl(pathStr);
             }
         }
+        //TODO spUtils 数据存储 无论是选择完target 图片还是 marker的视频都进行保存
+        spUtil.putLocalData(jsonDataBean.toJSON().toString());
     }
 
 }
