@@ -24,8 +24,6 @@ import cn.easyar.utils.UriUtils;
 
 //TODO
 // 1. 视频地址
-// 2. 图片选择
-// 3. 拍照重复
 // 4. 删除
 
 /**

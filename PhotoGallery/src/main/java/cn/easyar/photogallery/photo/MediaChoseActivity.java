@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -303,7 +302,7 @@ public class MediaChoseActivity extends ActionBarActivity {
     }
 
 
-    public void insertImage(String fileName) {
+    /*public void insertImage(String fileName) {
         try {
             MediaStore.Images.Media.insertImage(getContentResolver(),
                     fileName, new File(fileName).getName(),
@@ -325,6 +324,25 @@ public class MediaChoseActivity extends ActionBarActivity {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }*/
+
+    public void insertImage(String fileName) {
+
+        // 不生成缩略图
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri uri = Uri.fromFile(new File(fileName));
+        intent.setData(uri);
+        sendBroadcast(intent);
+        MediaScannerConnection.scanFile(this, new String[]{fileName}, new String[]{"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
+            @Override
+            public void onMediaScannerConnected() {
+            }
+
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                photoGalleryFragment.addCaptureFile(path);
+            }
+        });
     }
 
     public static final int REQUEST_CODE_CAMERA = 2001;
