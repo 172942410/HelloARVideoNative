@@ -25,7 +25,16 @@
             android:id="@+id/button_start"
             android:text="  开 始  " />
     </LinearLayout>
-
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:padding="10dp"
+    android:textColor="@android:color/darker_gray"
+    android:textSize="14sp"
+    android:text="AR逻辑上不限制最大可跟踪的target底图数目。最大的可跟踪target的个数取决于硬件性能和target底图在场景中的大小。
+在主流智能机上，可以流畅的同时跟踪4~6个target。"
+    />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

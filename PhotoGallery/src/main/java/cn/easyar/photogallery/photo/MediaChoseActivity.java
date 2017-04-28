@@ -42,6 +42,7 @@ import cn.easyar.photogallery.ucrop.UCrop;
  */
 public class MediaChoseActivity extends ActionBarActivity {
 
+    private static final String TAG = "MediaChoseActivity";
     public int max_chose_count = 1;
     public LinkedHashMap imasgemap = new LinkedHashMap();
     public LinkedHashSet imagesChose = new LinkedHashSet();
@@ -107,9 +108,13 @@ public class MediaChoseActivity extends ActionBarActivity {
                 }
                 insertImage(currentfile.getAbsolutePath());
             }else {
-                getImageChoseMap().put(currentfile.getAbsolutePath(), currentfile.getAbsolutePath());
-                invalidateOptionsMenu();
-                insertImage(currentfile.getAbsolutePath());
+                if(currentfile != null) {
+                    getImageChoseMap().put(currentfile.getAbsolutePath(), currentfile.getAbsolutePath());
+                    invalidateOptionsMenu();
+                    insertImage(currentfile.getAbsolutePath());
+                }else {
+                    Log.e(TAG,"currentfile 对象 空了");
+                }
             }
         }
 
