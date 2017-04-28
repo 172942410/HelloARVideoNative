@@ -131,12 +131,24 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK && requestCode == PickConfig.PICK_REQUEST_CODE){
-            //在data中返回 选择的图片列表
-            ArrayList<String> paths=data.getStringArrayListExtra("data");
-            jsonDataBean = list2Bean(paths);
-            readyRecyclerAdapter.addData(jsonDataBean);
-            Log.e("lists", "onActivityResult: "+paths.toString());
+        if(resultCode==RESULT_OK ){
+            if (requestCode == PickConfig.PICK_REQUEST_CODE){
+                //在data中返回 选择的图片列表
+                ArrayList<String> paths=data.getStringArrayListExtra("data");
+                jsonDataBean = list2Bean(paths);
+                readyRecyclerAdapter.addData(jsonDataBean);
+                Log.e("lists", "onActivityResult: "+paths.toString());
+            }else if (requestCode == PickConfig.PICK_REQUEST_CODE_SINGLE){
+                //更改单个图片地址
+                ArrayList<String> paths=data.getStringArrayListExtra("data");
+                String url = "";
+                if (paths!=null && paths.size()>0){
+                    url = paths.get(0);
+                }
+                readyRecyclerAdapter.setImageUrl(url);
+                Log.e("lists", "singleImage: "+paths.toString());
+            }
+
         }
 
         // 选取视频的返回值

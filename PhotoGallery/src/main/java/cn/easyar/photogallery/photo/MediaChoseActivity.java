@@ -172,9 +172,9 @@ public class MediaChoseActivity extends ActionBarActivity {
             menu.findItem(R.id.menu_photo_count).setEnabled(true);
             menu.findItem(R.id.menu_photo_count).setVisible(true);
             if (chosemode == PickConfig.MODE_MULTIP_PICK) {
-                menu.findItem(R.id.menu_photo_count).setTitle("发送(" + imasgemap.size() + "/" + max_chose_count + ")");
+                menu.findItem(R.id.menu_photo_count).setTitle("完成(" + imasgemap.size() + "/" + max_chose_count + ")");
             } else {
-                menu.findItem(R.id.menu_photo_count).setTitle("发送(1)");
+                menu.findItem(R.id.menu_photo_count).setTitle("完成(1)");
             }
         }
         return super.onCreateOptionsMenu(menu);

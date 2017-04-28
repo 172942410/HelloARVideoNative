@@ -22,6 +22,7 @@ public class PickConfig {
 
 
     public final static int PICK_REQUEST_CODE = 10607;
+    public final static int PICK_REQUEST_CODE_SINGLE = 10608;
 
 
     public final static String EXTRA_PICK_BUNDLE = "extra_pick_bundle";
@@ -41,6 +42,7 @@ public class PickConfig {
     private int maxPickSize;
     private boolean isneedcrop;
     private boolean isneedcamera;
+    private boolean isSingle;
     private int actionBarcolor;
     private int statusBarcolor;
     private UCrop.Options options;
@@ -52,6 +54,7 @@ public class PickConfig {
         this.maxPickSize = builder.maxPickSize;
         this.isneedcrop = builder.isneed_crop;
         this.isneedcamera = builder.isneed_camera;
+        this.isSingle = builder.isSingle;
         this.statusBarcolor = builder.statusBarcolor;
         this.actionBarcolor = builder.actionBarcolor;
         this.options=builder.options;
@@ -81,7 +84,13 @@ public class PickConfig {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PICK_BUNDLE, bundle);
         intent.setClass(context, MediaChoseActivity.class);
-        context.startActivityForResult(intent, PICK_REQUEST_CODE);
+        int requestCode;
+        if (isSingle){
+            requestCode = PICK_REQUEST_CODE_SINGLE;
+        }else {
+            requestCode = PICK_REQUEST_CODE;
+        }
+        context.startActivityForResult(intent, requestCode);
     }
 
 
@@ -94,6 +103,7 @@ public class PickConfig {
         private boolean isneed_crop = false;
         private boolean isneed_camera = true;
         private boolean isSqureCrop=false;
+        private boolean isSingle = false;
         private int actionBarcolor = Color.parseColor("#03A9F4");
         private int statusBarcolor = Color.parseColor("#0288D1");
 
@@ -166,6 +176,11 @@ public class PickConfig {
 
         public PickConfig.Builder isneedcamera(boolean isneed_camera) {
             this.isneed_camera = isneed_camera;
+            return this;
+        }
+
+        public PickConfig.Builder isSinglePick(boolean isSingle){
+            this.isSingle = isSingle;
             return this;
         }
 
