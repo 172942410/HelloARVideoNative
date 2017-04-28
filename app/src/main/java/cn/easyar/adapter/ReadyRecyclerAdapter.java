@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.util.ArrayList;
-
 import cn.easyar.bean.JsonDataBean;
+import cn.easyar.db.SharedPreferencesUtil;
 import cn.easyar.samples.helloarvideo.R;
 
 /**
@@ -25,38 +25,45 @@ import cn.easyar.samples.helloarvideo.R;
 public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdapter.ItemHolder> {
     private static final String TAG = "ReadyRecyclerAdapter";
     Activity activity;
-//    private ArrayList<String> photoList;
-    private ItemHolder itemHolder;
-    ArrayList<JsonDataBean.Target> targetList;
-
+    JsonDataBean jsonDataBean;
+    SharedPreferencesUtil spUtil;
     public ReadyRecyclerAdapter(Activity activity){
         this.activity = activity;
-        targetList = new ArrayList<>();
-    }
-//    public ReadyRecyclerAdapter(Activity activity, ArrayList<String> photoList){
-//        this.activity = activity;
-//        this.photoList = photoList;
-//    }
-    public void setData(ArrayList<JsonDataBean.Target> targetList){
-
-        if(targetList == null || targetList.size() == 0){
-            Log.e(TAG,"adapter数据targetList 为空");
-            return;
+        spUtil = SharedPreferencesUtil.getInstance(activity);
+        String localData = spUtil.getLocalData();//读取本地数据
+        if(localData != null && localData.length()>0) {
+            jsonDataBean = JsonDataBean.createObject(localData);
         }
-        Log.e(TAG,"设置adapter数据");
-        this.targetList.clear();
-        this.targetList.addAll(targetList);
+    }
+    public JsonDataBean getData(){
+        return jsonDataBean;
+    }
+    public  JsonDataBean addData(JsonDataBean jsonDataBean){
+        if(this.jsonDataBean == null && jsonDataBean != null){
+            this.jsonDataBean = jsonDataBean;
+        }else if(this.jsonDataBean != null && jsonDataBean != null) {
+            if(this.jsonDataBean.images == null){
+                this.jsonDataBean.images = jsonDataBean.images;
+            }else {
+                this.jsonDataBean.images.addAll(jsonDataBean.images);
+            }
+            jsonDataBean = this.jsonDataBean;
+        }
         notifyDataSetChanged();
+        spUtil.putLocalData(this.jsonDataBean.toJSON().toString());
+        return  this.jsonDataBean;
     }
-    public void addData(ArrayList<JsonDataBean.Target> targetList){
-        if(targetList == null || targetList.size() == 0){
-            return;
-        }
-        if( this.targetList != null){
-            this.targetList.addAll(targetList);
-            notifyDataSetChanged();
-        }
-    }
+//    public  JsonDataBean setData(JsonDataBean jsonDataBean){
+//
+//        if(jsonDataBean == null || jsonDataBean.images == null){
+//            Log.e(TAG,"adapter数据targetList 为空");
+//            return jsonDataBean;
+//        }
+//        Log.e(TAG,"设置adapter数据");
+//        this.jsonDataBean = jsonDataBean;
+//        notifyDataSetChanged();
+//        return  jsonDataBean;
+//    }
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(activity).inflate(R.layout.item_ready, parent, false);
@@ -66,14 +73,17 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder holder, final int position) {
-        itemHolder = holder;
+    public void onBindViewHolder(ItemHolder itemHolder, final int position) {
+//        itemHolder = holder;
+        JsonDataBean.Target target = jsonDataBean.images.get(position);
+        itemHolder.setBindData(target);
         // 显示缩略图
-        displayImage(targetList.get(position).image, itemHolder.imageView);
-        itemHolder.addBtn.setText(targetList.get(position).image);
-        if(targetList.get(position).uid != null && targetList.get(position).uid.length()>0) {
-            itemHolder.videoBtn.setText(targetList.get(position).uid);
+        displayImage(target.image, itemHolder.imageView);
+        itemHolder.addBtn.setText(target.image);
+        if(target.uid != null && target.uid.length()>0) {
+            itemHolder.videoBtn.setText(target.uid);
         }
+
 //        itemHolder.videoBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -84,13 +94,13 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
 
     @Override
     public int getItemCount() {
-        if (targetList==null || targetList.size()==0){
+        if (jsonDataBean==null || jsonDataBean.images == null){
             return 0;
         }
-        return targetList.size();
+        return jsonDataBean.images.size();
     }
 
-    private void selectVideo(View view){
+    private void selectVideo(JsonDataBean.Target target){
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -105,7 +115,9 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
     }
 
     public void setVideoUrl(String url){
-        itemHolder.videoBtn.setText(url);
+        jsonDataBean.images.get(0).uid = url;//TODO 先默认只是第一个；之后要对应住每一个item
+        Log.e(TAG,"jsonDataBean:"+jsonDataBean.toString());
+        spUtil.putLocalData(jsonDataBean.toJSON().toString());
         notifyDataSetChanged();
     }
 
@@ -124,18 +136,44 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
         public Button videoBtn;
         public ImageView imageView;
         public Button addBtn;
+        public ImageButton imageButtonDelete;
+        JsonDataBean.Target bindData;
         public ItemHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.photo);
             addBtn = (Button) itemView.findViewById(R.id.button_add);
+            addBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO 更换图片地址
+//                    changeImage(bindData);
+//                    addBtn.setText(bindData.image);
+                }
+            });
             videoBtn = (Button) itemView.findViewById(R.id.button_start);
             videoBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selectVideo(v);
+                    //TODO 更换视频地址
+                    selectVideo(bindData);
+//                    videoBtn.setText(bindData.uid);
+                }
+            });
+            imageButtonDelete = (ImageButton) itemView.findViewById(R.id.image_button_delete);
+            imageButtonDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 删除当前一组数据
+                    jsonDataBean.images.remove(bindData);
+                    // 需要从数据存储中移除；
+                    spUtil.putLocalData(jsonDataBean.toJSON().toString());
+                    notifyDataSetChanged();
                 }
             });
         }
 
+        public void setBindData(JsonDataBean.Target bindData) {
+            this.bindData = bindData;
+        }
     }
 }

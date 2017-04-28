@@ -19,6 +19,16 @@ public class JsonDataBean extends BaseBean<JsonDataBean> {
         public String name;//可填
         public String uid;//预留字段；目前做为了 对应视频地址；但必填
         public ArrayList<Double> size;//[8.56, 5.4]//一般不填写
+
+        @Override
+        public String toString() {
+            return "Target{" +
+                    "image='" + image + '\'' +
+                    ", name='" + name + '\'' +
+                    ", uid='" + uid + '\'' +
+                    ", size=" + size +
+                    '}';
+        }
     }
 
     public static JsonDataBean createObject(String str){
@@ -99,5 +109,12 @@ public class JsonDataBean extends BaseBean<JsonDataBean> {
     @Override
     public ContentValues beanToValues() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "JsonDataBean{" +
+                "images=" + images +
+                '}';
     }
 }

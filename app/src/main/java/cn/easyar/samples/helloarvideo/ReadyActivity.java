@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import cn.easyar.adapter.ReadyRecyclerAdapter;
 import cn.easyar.bean.JsonDataBean;
-import cn.easyar.db.SharedPreferencesUtil;
 import cn.easyar.photogallery.photo.widget.PickConfig;
 import cn.easyar.utils.UriUtils;
 
@@ -36,7 +35,6 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
     RecyclerView recyclerView;
     ReadyRecyclerAdapter readyRecyclerAdapter;
     Button buttonAdd,buttonStart;
-    SharedPreferencesUtil spUtil;
     JsonDataBean jsonDataBean;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +53,6 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         readyRecyclerAdapter = new ReadyRecyclerAdapter(this);
         recyclerView.setAdapter(readyRecyclerAdapter);
-        spUtil = SharedPreferencesUtil.getInstance(this);
-        String localData = spUtil.getLocalData();//读取本地数据
-        Log.e(TAG,"localData:"+localData);
-        if(localData != null && localData.length()>0) {
-            jsonDataBean = JsonDataBean.createObject(localData);
-        }
-        if(jsonDataBean != null) {
-            readyRecyclerAdapter.setData(jsonDataBean.images);
-        }
     }
 
 
@@ -96,6 +85,7 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                 Intent intent = new Intent();
                 intent.setClass(this, MainActivity.class);
                 // 传递参数 需要加载的 JSON 数据
+                jsonDataBean = readyRecyclerAdapter.getData();
                 if (jsonDataBean != null) {
                     String jsonStr = jsonDataBean.toJSON().toString();
                     Log.e(TAG, "jsonStr:" + jsonStr);
@@ -144,11 +134,8 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
         if(resultCode==RESULT_OK && requestCode == PickConfig.PICK_REQUEST_CODE){
             //在data中返回 选择的图片列表
             ArrayList<String> paths=data.getStringArrayListExtra("data");
-            //TODO recyclerview 设置adapter
-//            readyRecyclerAdapter = new ReadyRecyclerAdapter(this,paths);
-//            recyclerView.setAdapter(readyRecyclerAdapter);
             jsonDataBean = list2Bean(paths);
-            readyRecyclerAdapter.setData(jsonDataBean.images);
+            readyRecyclerAdapter.addData(jsonDataBean);
             Log.e("lists", "onActivityResult: "+paths.toString());
         }
 
@@ -162,7 +149,6 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
 //                    imgNo = cursor.getString(2);//
                     pathStr =  UriUtils.getPath(this,uri);
                     Log.e("路径", "pathStr onActivityResult: "+pathStr);
-                    jsonDataBean.images.get(0).uid = pathStr;//TODO 先默认只是第一个；之后要对应住每一个item
                 }else {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                     cursor.moveToFirst();
@@ -181,16 +167,10 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                     Log.e("lujing", "v_name onActivityResult: " + v_name);
                     Log.e("lujing", "v_4 onActivityResult: " + v_4);
                     Log.e("lujing", "v_5 onActivityResult: " + v_5);
-//                Log.e("lujing", "v_6 onActivityResult: "+v_6);
-//                Log.e("lujing", "v_7 onActivityResult: "+v_7);
-                    jsonDataBean.images.get(0).uid = pathStr;//TODO 先默认只是第一个；之后要对应住每一个item
                 }
-                readyRecyclerAdapter.setData(jsonDataBean.images);
-//                readyRecyclerAdapter.setVideoUrl(pathStr);
+                readyRecyclerAdapter.setVideoUrl(pathStr);
             }
         }
-        //TODO spUtils 数据存储 无论是选择完target 图片还是 marker的视频都进行保存
-        spUtil.putLocalData(jsonDataBean.toJSON().toString());
     }
 
 }
