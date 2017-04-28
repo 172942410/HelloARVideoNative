@@ -2,6 +2,7 @@ package cn.easyar.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import cn.easyar.bean.JsonDataBean;
 import cn.easyar.db.SharedPreferencesUtil;
+import cn.easyar.photogallery.photo.widget.PickConfig;
 import cn.easyar.samples.helloarvideo.R;
 
 /**
@@ -122,6 +124,23 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
         notifyDataSetChanged();
     }
 
+    public void selectImage(JsonDataBean.Target target){
+        curTarget = target;
+        new PickConfig.Builder(activity)
+                .actionBarcolor(Color.parseColor("#E91E63"))
+                .statusBarcolor(Color.parseColor("#D81B60"))
+                .maxPickSize(1)
+                .isSinglePick(true)
+                .pickMode(PickConfig.MODE_SINGLE_PICK).build();
+    }
+
+    public void setImageUrl(String url){
+        curTarget.image = url;
+        Log.e(TAG,"jsonDataBean:"+jsonDataBean.toString());
+        spUtil.putLocalData(jsonDataBean.toJSON().toString());
+        notifyDataSetChanged();
+    }
+
     public void displayImage(String url, ImageView view) {
         Glide.with(activity).load(url).
                 centerCrop()
@@ -147,6 +166,7 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
                 @Override
                 public void onClick(View v) {
                     //TODO 更换图片地址
+                    selectImage(bindData);
 //                    changeImage(bindData);
 //                    addBtn.setText(bindData.image);
                 }
