@@ -80,6 +80,7 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
         // 显示缩略图
         displayImage(target.image, itemHolder.imageView);
         itemHolder.addBtn.setText(target.image);
+        itemHolder.videoBtn.setText("对应视频地址.");
         if(target.uid != null && target.uid.length()>0) {
             itemHolder.videoBtn.setText(target.uid);
         }
@@ -99,23 +100,23 @@ public class ReadyRecyclerAdapter extends RecyclerView.Adapter<ReadyRecyclerAdap
         }
         return jsonDataBean.images.size();
     }
+    /**
+     * 记录当前跳出去的对象
+     */
+    private JsonDataBean.Target curTarget;
 
     private void selectVideo(JsonDataBean.Target target){
+        //去系统或者第三方图库相册需要在本地记录位置和数据；
+        curTarget = target;
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         activity.startActivityForResult(intent,110);
     }
 
-    private void selectVideo(View view, int postion){
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        activity.startActivityForResult(intent,110);
-    }
 
     public void setVideoUrl(String url){
-        jsonDataBean.images.get(0).uid = url;//TODO 先默认只是第一个；之后要对应住每一个item
+        curTarget.uid = url;
         Log.e(TAG,"jsonDataBean:"+jsonDataBean.toString());
         spUtil.putLocalData(jsonDataBean.toJSON().toString());
         notifyDataSetChanged();
