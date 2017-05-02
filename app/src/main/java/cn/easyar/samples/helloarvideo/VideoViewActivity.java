@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 public class VideoViewActivity extends ActionBarActivity {
@@ -26,6 +27,10 @@ public class VideoViewActivity extends ActionBarActivity {
         String urlStr = intent.getStringExtra("urlStr");
 //        Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()+"/Test_Movie.m4v");
         Log.e(TAG,"播放的视频地址为："+urlStr);
+        if(urlStr == null || urlStr.length() == 0){
+            Toast.makeText(this, "播放地址为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Uri uri = Uri.parse(urlStr);
         VideoView videoView = (VideoView)this.findViewById(R.id.video_view);
         videoView.setMediaController(new MediaController(this));
@@ -34,4 +39,7 @@ public class VideoViewActivity extends ActionBarActivity {
         videoView.requestFocus();
     }
 
+    public void actionBack(View v){
+        onBackPressed();
+    }
 }
