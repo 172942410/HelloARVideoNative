@@ -71,8 +71,8 @@ void AR::loadFromImage(const std::string& path)
                        "    }\n"
                        "  ]\n"
                        "}";
-//    target.load(jstr.c_str(), EasyAR::kStorageAssets | EasyAR::kStorageJson);
-    target.load(jstr.c_str(), EasyAR::kStorageAbsolute | EasyAR::kStorageJson);
+    target.load(jstr.c_str(), EasyAR::kStorageAssets | EasyAR::kStorageJson);
+//    target.load(jstr.c_str(), EasyAR::kStorageAbsolute | EasyAR::kStorageJson);
     tracker_.loadTarget(target, new HelloCallBack());
 }
 

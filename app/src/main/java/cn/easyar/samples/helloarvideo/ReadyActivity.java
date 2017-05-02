@@ -87,9 +87,11 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                 // 传递参数 需要加载的 JSON 数据
                 jsonDataBean = readyRecyclerAdapter.getData();
                 if (jsonDataBean != null) {
-                    String jsonStr = jsonDataBean.toJSON().toString();
-                    Log.e(TAG, "jsonStr:" + jsonStr);
-                    intent.putExtra("data", jsonStr);
+                    if(jsonDataBean.toJSON() != null) {
+                        String jsonStr = jsonDataBean.toJSON().toString();
+                        Log.e(TAG, "jsonStr:" + jsonStr);
+                        intent.putExtra("data", jsonStr);
+                    }
                 }
                 startActivity(intent);
                 break;

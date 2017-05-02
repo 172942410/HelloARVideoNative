@@ -25,6 +25,8 @@ extern "C" {
     JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeInputTarger(JNIEnv* env, jobject obj, jobjectArray paths));
     JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeInputMarker(JNIEnv* env, jobject obj, jobjectArray paths));
     JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitJson(JNIEnv* env, jobject object,jstring jsonStr));
+    JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE(nativeGetVideoUrl(JNIEnv* env, jobject object));
+
 };
 
 namespace EasyAR {
@@ -48,6 +50,7 @@ private:
     ARVideo* video;
     VideoRenderer* video_renderer;
     std::string data[3];
+    const char* videoUrl;
 };
 
 HelloARVideo::HelloARVideo()
@@ -61,8 +64,9 @@ HelloARVideo::HelloARVideo()
     }
     video = NULL;
     video_renderer = NULL;
-    data[0]="video.mp4";
-    data[1] = "transparentvideo.mp4";
+    videoUrl = NULL;
+    data[0]="test.flv";
+    data[1] = "test.flv";
     data[2]="http://7xl1ve.com5.z0.glb.clouddn.com/sdkvideo/EasyARSDKShow201520.mp4";
 //    data[3] = {"video.mp4","transparentvideo.mp4","http://7xl1ve.com5.z0.glb.clouddn.com/sdkvideo/EasyARSDKShow201520.mp4"};
 }
@@ -116,16 +120,17 @@ void HelloARVideo::render()
         }
         if (!tracked_target) {
             if (video == NULL) {
-                if(frame.targets()[0].target().name() == std::string("argame") && texid[0]) {
+                if(frame.targets()[0].target().name() == std::string("arbg") && texid[0]) {
                     video = new ARVideo;
-                    video->openVideoFile(frame.targets()[0].target().uid(), texid[0]);
+                    video->openVideoFile(data[0], texid[0]);
+//                    video->openVideoFile(frame.targets()[0].target().uid(), texid[0]);
 //                    读取sd卡文件
 //                    video->openStreamingVideo("/storage/emulated/0/tencent/MicroMsg/WeiXin/test.mp4", texid[0]);
                     video_renderer = renderer[0];
                 }
-//                else if(frame.targets()[0].target().name() == std::string("namecard") && texid[1]) {
+                else if(frame.targets()[0].target().name() == std::string("namecard") && texid[1]) {
                     //sd卡读取路径
-                else if(frame.targets()[0].target().name() == std::string("/storage/emulated/0/sina/weibo/weibo/test") && texid[1]) {
+//                else if(frame.targets()[0].target().name() == std::string("/storage/emulated/0/sina/weibo/weibo/test") && texid[1]) {
                     video = new ARVideo;
                     video->openVideoFile(data[0], texid[1]);
 //                    video->openTransparentVideoFile("transparentvideo.mp4", texid[1]);
@@ -139,6 +144,7 @@ void HelloARVideo::render()
                     video_renderer = renderer[2];
                 }else{
                     video = new ARVideo;
+                    videoUrl = frame.targets()[0].target().uid();
                     video->openStreamingVideo(frame.targets()[0].target().uid(),texid[2]);
                     video_renderer = renderer[2];
                 }
@@ -183,9 +189,9 @@ EasyAR::samples::HelloARVideo ar;
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv*, jobject))
 {
     bool status = ar.initCamera();
-    ar.loadAllFromJsonFile("targets.json");
-//    ar.loadFromImage("namecard.jpg");
-    ar.loadFromImage("/storage/emulated/0/sina/weibo/weibo/test.jpg");
+//    ar.loadAllFromJsonFile("targets.json");
+    ar.loadFromImage("arbg.jpg");
+//    ar.loadFromImage("/storage/emulated/0/sina/weibo/weibo/test.jpg");
     status &= ar.start();
     return status;
 }
@@ -224,9 +230,19 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv*, jobject,
 {
     ar.setPortrait(portrait);
 }
-JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeInputTarger(JNIEnv* env, jobject, jobjectArray paths))
-{
-    //通过java传递进来的String数组对象
-    jclass stringArrCls = env->FindClass("[Ljava/lang/String");
-
-}
+//将const char类型转换成jstring类型
+//JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE(nativeGetVideoUrl(JNIEnv* env, jobject object))
+//{
+//    // 定义java String类 strClass
+//    jclass strClass = (env)->FindClass("Ljava/lang/String;");
+//    // 获取java String类方法String(byte[],String)的构造器,用于将本地byte[]数组转换为一个新String
+//    jmethodID ctorID = (env)->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V");
+//    // 建立byte数组
+//    jbyteArray bytes = (env)->NewByteArray((jsize)strlen(videoUrl));
+//    // 将char* 转换为byte数组
+//    (env)->SetByteArrayRegion(bytes, 0, (jsize)strlen(videoUrl), (jbyte*)videoUrl);
+//    //设置String, 保存语言类型,用于byte数组转换至String时的参数
+//    jstring encoding = (env)->NewStringUTF("GB2312");
+//    //将byte数组转换为java String,并输出
+//    return (jstring)(env)->NewObject(strClass, ctorID, bytes, encoding);
+//}
