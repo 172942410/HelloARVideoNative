@@ -166,7 +166,7 @@ public class ReadyActivity extends ActionBarActivity implements View.OnClickList
                 }else {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                     cursor.moveToFirst();
-                    pathStr = cursor.getString(0); // 路径
+                    pathStr = cursor.getString(1); // 路径
 
                     String v_path = cursor.getString(1);
                     String v_size = cursor.getString(2);
