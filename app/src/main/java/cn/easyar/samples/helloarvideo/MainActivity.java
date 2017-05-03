@@ -57,7 +57,7 @@ public class MainActivity extends ActionBarActivity{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);//隐藏状态栏
         EasyAR.initialize(this, key);
-        if (jsonStr != null && jsonStr.length() > 0) {
+        if (jsonStr != null && jsonStr.length() > 13) {//为空时最长13个字节长度
             //初始化AR的 target s 信息
             nativeInitJson(jsonStr);
         } else {

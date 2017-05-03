@@ -28,13 +28,17 @@ public class VideoViewActivity extends ActionBarActivity {
 //        Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()+"/Test_Movie.m4v");
         Log.e(TAG,"播放的视频地址为："+urlStr);
         if(urlStr == null || urlStr.length() == 0){
-            Toast.makeText(this, "播放地址为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "视频地址为空", Toast.LENGTH_SHORT).show();
             return;
+        }else if(!urlStr.contains("/")){
+            urlStr = "file:///android_asset/"+urlStr;
+
         }
         Uri uri = Uri.parse(urlStr);
         VideoView videoView = (VideoView)this.findViewById(R.id.video_view);
         videoView.setMediaController(new MediaController(this));
         videoView.setVideoURI(uri);
+//        videoView.setVideoPath(urlStr);
         videoView.start();
         videoView.requestFocus();
     }

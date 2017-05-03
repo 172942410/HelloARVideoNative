@@ -126,7 +126,8 @@ void HelloARVideo::render()
             if (video == NULL) {
                 if(frame.targets()[0].target().name() == std::string("arbg") && texid[0]) {
                     video = new ARVideo;
-                    videoUrl = NULL;
+                    videoUrl = data[0].c_str();
+//                    videoUrl = NULL;
                     video->openVideoFile(data[0], texid[0]);
 //                    video->openVideoFile(frame.targets()[0].target().uid(), texid[0]);
 //                    读取sd卡文件
@@ -137,8 +138,8 @@ void HelloARVideo::render()
                     //sd卡读取路径
 //                else if(frame.targets()[0].target().name() == std::string("/storage/emulated/0/sina/weibo/weibo/test") && texid[1]) {
                     video = new ARVideo;
-//                    videoUrl = data[0].c_str();
-                    videoUrl = NULL;
+                    videoUrl = data[0].c_str();
+//                    videoUrl = NULL;
                     video->openVideoFile(data[0], texid[1]);
 //                    video->openTransparentVideoFile("transparentvideo.mp4", texid[1]);
                     video_renderer = renderer[1];
