@@ -116,6 +116,8 @@ public class MainActivity extends ActionBarActivity{
         Log.e(TAG,"视频全屏播放 按钮点击了");
         Intent intent = new Intent();
         intent.setClass(this,VideoViewActivity.class);
+//        intent.setClass(this,VideoSurfaceActivity.class);
+
         String strUrl = nativeGetVideoUrl();
         Log.e(TAG,"获取C++代码中的播放地址："+strUrl);
         if(strUrl == null || strUrl.length() == 0){
